@@ -6,17 +6,19 @@ LinkVault MCP Server - Main entry point
 import os
 import sys
 import argparse
-from server import app as mcp_app
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def start_mcp_server():
     """Start the MCP server for bookmark management."""
-    print("Starting MCP Bookmark Manager Server...")
-    mcp_app.run()
+    from src.server import app
+    print("Starting LinkVault MCP Server...")
+    app.run()
 
 def start_cli():
     """Start the command-line interface."""
-    # Import here to avoid circular imports
-    from url_manager import main as url_manager_main
+    from src.url_manager import main as url_manager_main
     url_manager_main()
 
 def main():

@@ -19,8 +19,25 @@ A tool for managing, categorizing, and searching web URLs with both CLI and AI-a
    ```
 3. Make the scripts executable:
    ```
-   chmod +x url_manager.py server.py main.py
+   chmod +x main.py src/url_manager.py src/server.py
    ```
+
+## Project Structure
+
+```
+linkvault-mcp-server/
+├── src/                    # Source code directory
+│   ├── __init__.py         # Package initialization
+│   ├── server.py           # MCP server implementation
+│   ├── url_manager.py      # CLI implementation
+│   └── utils/              # Utility functions
+│       └── __init__.py
+├── data/                   # Database storage
+├── main.py                 # Main entry point
+├── README.md               # This file
+├── CHANGELOG.md            # Version history
+└── pyproject.toml          # Project dependencies
+```
 
 ## Usage
 
@@ -35,7 +52,7 @@ The CLI mode uses a simple JSON file for storage and provides basic bookmark man
 Or directly:
 
 ```
-./url_manager.py <command> [options]
+./src/url_manager.py <command> [options]
 ```
 
 #### CLI Commands
@@ -61,7 +78,7 @@ The MCP server mode provides AI-assisted bookmark management when used with Amaz
 Or directly:
 
 ```
-./server.py
+./src/server.py
 ```
 
 #### Amazon Q MCP Setup
@@ -77,14 +94,14 @@ To use the bookmark manager with Amazon Q, you need to update the Amazon Q MCP c
    ```json
    "bookmark_manager": {
      "command": "uv",
-     "args": ["--directory", "/path/to/url-tool", "run", "server.py"],
+     "args": ["--directory", "/path/to/linkvault-mcp-server", "run", "src/server.py"],
      "env": {},
      "disabled": false,
      "autoApprove": ["get_url_data", "store_url", "search_bookmarks", "list_categories", "list_bookmarks_by_category", "delete_bookmark"]
    }
    ```
 
-3. Replace `/path/to/url-tool` with the actual path to your installation directory.
+3. Replace `/path/to/linkvault-mcp-server` with the actual path to your installation directory.
 
 4. Save the file and restart Amazon Q CLI if it's already running.
 
@@ -130,19 +147,8 @@ Amazon Q: "I've deleted the bookmark for example.com from your collection."
 
 ## Data Storage
 
-- CLI mode: JSON file at `~/Documents/temp/url-tool/url_database.json`
-- MCP mode: SQLite database at `~/Documents/temp/url-tool/data/bookmarks.db`
-
-## Project Structure
-
-```
-url-tool/
-├── main.py                  # Main entry point
-├── url_manager.py           # CLI implementation
-├── server.py                # MCP server implementation
-├── data/                    # Database storage
-└── README.md                # This file
-```
+- CLI mode: JSON file at `~/Documents/github/linkvault-mcp-server/data/url_database.json`
+- MCP mode: SQLite database at `~/Documents/github/linkvault-mcp-server/data/bookmarks.db`
 
 ## MCP Tool Reference
 
@@ -166,7 +172,7 @@ def get_url_data(url: str) -> Dict[str, Any]:
 ```python
 def store_url(url: str, title: str, category: str, 
               tags: List[str], description: str, 
-              importance: int) -> Dict[str, Any]:
+              importance: int, notes: str = None) -> Dict[str, Any]:
     """
     Store a URL with AI-generated metadata.
     
@@ -177,6 +183,7 @@ def store_url(url: str, title: str, category: str,
         tags: List of tags to associate with the URL
         description: A brief description of the content
         importance: Importance rating (1-5)
+        notes: Optional additional notes or comments about the URL
         
     Returns:
         A dictionary indicating success or failure

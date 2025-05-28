@@ -1,0 +1,1 @@
+beautifulsoup4>=4.13.4\nfastapi>=0.115.12\nfastmcp>=2.5.1\nmcp>=1.9.1\nrequests>=2.32.3

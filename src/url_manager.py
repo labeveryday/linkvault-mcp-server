@@ -14,10 +14,11 @@ import requests
 from bs4 import BeautifulSoup
 
 # File to store the URL database
-DB_FILE = os.path.expanduser("~/Documents/temp/url-tool/url_database.json")
+DB_FILE = os.path.expanduser("~/Documents/github/linkvault-mcp-server/data/url_database.json")
 
 def load_database():
     """Load the URL database from file or create a new one if it doesn't exist."""
+    os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
     if os.path.exists(DB_FILE):
         with open(DB_FILE, 'r') as f:
             try:

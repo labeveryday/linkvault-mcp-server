@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 from fastmcp import FastMCP
 
 # Database setup
-DB_PATH = os.path.expanduser("~/Documents/temp/url-tool/data/bookmarks.db")
+DB_PATH = os.path.expanduser("~/Documents/github/linkvault-mcp-server/data/bookmarks.db")
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 def init_db():
@@ -628,6 +628,6 @@ def delete_bookmark(url: str, category: str = None) -> Dict[str, Any]:
 
 if __name__ == "__main__":
     # Start the MCP server
-    print("Starting MCP Bookmark Manager Server...")
+    print("Starting LinkVault MCP Server...")
     print(f"Database path: {DB_PATH}")
     app.run()
