@@ -3,7 +3,7 @@
 A tool for extending Amazon Q CLI with AI-assisted bookmark management capabilities.
 
 <p align="center">
-  <img src="./img/logo.png" alt="LinkVault Logo" width="300">
+  <img src="./img/logo.png" alt="LinkVault Logo" width="100%">
 </p>
 
 ## Overview
