@@ -1,15 +1,18 @@
 # LinkVault MCP Server
 
-A tool for managing, categorizing, and searching web URLs with both CLI and AI-assisted interfaces.
+A tool for extending Amazon Q CLI with AI-assisted bookmark management capabilities.
 
-## Features
+## Overview
 
-- **CLI Interface**: Simple command-line tool for managing bookmarks
-- **MCP Server**: Model Context Protocol server for AI-assisted bookmark management
-- **Content Extraction**: Automatically extract webpage titles and content
-- **Intelligent Categorization**: AI-assisted categorization and tagging (with MCP)
-- **Local Storage**: Store bookmarks in SQLite database or JSON file
-- **Browser Integration**: Import and manage Chrome bookmarks across all profiles
+LinkVault is an MCP (Model Context Protocol) server that integrates with Amazon Q CLI to provide intelligent bookmark management through natural language. It allows you to access, organize, and search your bookmarks using conversational commands in your terminal.
+
+## Key Features
+
+- **Amazon Q CLI Integration**: Manage bookmarks using natural language in your terminal
+- **Chrome Multi-Profile Support**: Access bookmarks from all your Chrome profiles
+- **Content Extraction**: Automatically analyze webpage content for better categorization
+- **Intelligent Organization**: AI-assisted categorization and tagging
+- **Cross-Platform**: Works on macOS, Windows, and Linux
 
 ## Installation
 
@@ -23,32 +26,53 @@ A tool for managing, categorizing, and searching web URLs with both CLI and AI-a
    chmod +x main.py src/url_manager.py src/server.py
    ```
 
-## Architecture
+## Amazon Q CLI Setup
 
-### System Overview
+To use LinkVault with Amazon Q CLI, you need to register it as an MCP server:
+
+1. Edit the MCP configuration file:
+   ```
+   nano ~/.aws/amazonq/mcp.json
+   ```
+
+2. Add the bookmark_manager configuration:
+   ```json
+   "bookmark_manager": {
+     "command": "uv",
+     "args": ["--directory", "/path/to/linkvault-mcp-server", "run", "src/server.py"],
+     "env": {},
+     "disabled": false,
+     "autoApprove": ["get_url_data", "store_url", "search_bookmarks", "list_categories", "list_bookmarks_by_category", "delete_bookmark", "list_chrome_bookmarks", "import_chrome_bookmark"]
+   }
+   ```
+
+3. Replace `/path/to/linkvault-mcp-server` with the actual path to your installation directory.
+
+4. Save the file and restart Amazon Q CLI if it's already running.
+
+## MCP Architecture
+
+LinkVault uses the Model Context Protocol to extend Amazon Q CLI with bookmark management capabilities:
 
 ```mermaid
 graph TD
-    User[User] -->|CLI Commands| CLI[CLI Interface]
-    User -->|Natural Language| AQ[Amazon Q]
-    AQ -->|MCP Protocol| MCP[MCP Server]
-    CLI -->|JSON Storage| JSON[(JSON Database)]
+    User[User] -->|Natural Language| AQ[Amazon Q CLI]
+    AQ -->|MCP Protocol| MCP[LinkVault MCP Server]
     MCP -->|SQLite Storage| SQL[(SQLite Database)]
     MCP -->|Extract Content| Web[Web Pages]
     MCP -->|Read Bookmarks| Chrome[Chrome Profiles]
     
     subgraph LinkVault
-        CLI
         MCP
     end
 ```
 
-### MCP Workflow
+## MCP Workflow
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant AQ as Amazon Q
+    participant AQ as Amazon Q CLI
     participant MCP as LinkVault MCP Server
     participant Web as Web Pages
     participant DB as SQLite Database
@@ -75,7 +99,9 @@ sequenceDiagram
     AQ->>User: "Here are your Chrome bookmarks..."
 ```
 
-### Browser Integration
+## Browser Integration
+
+LinkVault can access bookmarks from all Chrome profiles on your system:
 
 ```mermaid
 flowchart TD
@@ -96,150 +122,48 @@ flowchart TD
     returnFiltered --> endNode
 ```
 
-## Project Structure
+## Example Interactions with Amazon Q CLI
 
 ```
-linkvault-mcp-server/
-├── src/                    # Source code directory
-│   ├── __init__.py         # Package initialization
-│   ├── server.py           # MCP server implementation
-│   ├── url_manager.py      # CLI implementation
-│   └── utils/              # Utility functions
-│       ├── __init__.py
-│       └── browser_integration.py  # Browser integration utilities
-├── data/                   # Database storage
-├── main.py                 # Main entry point
-├── README.md               # This file
-├── CHANGELOG.md            # Version history
-└── pyproject.toml          # Project dependencies
-```
+$ q chat
+Welcome to Amazon Q CLI!
 
-## Usage
+> Save this article: https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html
 
-### CLI Mode
+I'll analyze that article for you. One moment...
 
-The CLI mode uses a simple JSON file for storage and provides basic bookmark management.
-
-```
-./main.py --mode cli
-```
-
-Or directly:
-
-```
-./src/url_manager.py <command> [options]
-```
-
-#### CLI Commands
-
-- **Add a URL**: `add <url> <category> [-t tags] [-n notes] [--title custom_title]`
-- **List Categories**: `categories`
-- **List URLs in Category**: `list <category>`
-- **Search URLs**: `search <query>`
-- **List Tags**: `tags`
-- **List URLs with Tag**: `tag <tag>`
-- **Delete URL**: `delete <url> [-c category]`
-- **Rename Category**: `rename <old_name> <new_name>`
-- **Delete Category**: `delcat <category>`
-- **List Chrome Bookmarks**: `chrome [-f folder]`
-- **Import Chrome Bookmark**: `import <url> <category> [-t tags] [--title title]`
-
-### MCP Server Mode
-
-The MCP server mode provides AI-assisted bookmark management when used with Amazon Q.
-
-```
-./main.py --mode mcp
-```
-
-Or directly:
-
-```
-./src/server.py
-```
-
-#### Amazon Q MCP Setup
-
-To use the bookmark manager with Amazon Q, you need to update the Amazon Q MCP configuration:
-
-1. Edit the MCP configuration file:
-   ```
-   nano ~/.aws/amazonq/mcp.json
-   ```
-
-2. Add the bookmark_manager configuration:
-   ```json
-   "bookmark_manager": {
-     "command": "uv",
-     "args": ["--directory", "/path/to/linkvault-mcp-server", "run", "src/server.py"],
-     "env": {},
-     "disabled": false,
-     "autoApprove": ["get_url_data", "store_url", "search_bookmarks", "list_categories", "list_bookmarks_by_category", "delete_bookmark", "list_chrome_bookmarks", "import_chrome_bookmark"]
-   }
-   ```
-
-3. Replace `/path/to/linkvault-mcp-server` with the actual path to your installation directory.
-
-4. Save the file and restart Amazon Q CLI if it's already running.
-
-#### MCP Tools
-
-- **get_url_data**: Extract data from a URL
-- **store_url**: Store a URL with metadata
-- **search_bookmarks**: Search for bookmarks
-- **list_categories**: List all categories
-- **list_bookmarks_by_category**: List bookmarks in a category
-- **delete_bookmark**: Delete a bookmark by URL
-- **list_chrome_bookmarks**: List Chrome bookmarks across all profiles
-- **import_chrome_bookmark**: Import a Chrome bookmark into the database
-
-### Example Interactions with Amazon Q
-
-```
-You: "Save this article: https://example.com/article"
-
-Amazon Q: "I'll analyze that article for you. One moment..."
-[Amazon Q calls get_url_data() behind the scenes]
-
-Amazon Q: "I've analyzed the article and it appears to be about machine learning. 
+I've analyzed the article and it appears to be about AWS Lambda Function URLs.
 Would you like me to save it with the following details?
-- Category: Machine Learning
-- Tags: AI, neural networks, deep learning
-- Description: An overview of recent advances in neural network architectures
-- Importance: 4 (seems quite relevant)"
+- Category: Serverless
+- Tags: lambda, api, function-urls, http-endpoints
+- Description: Documentation on how to create and configure function URLs to provide dedicated HTTP(S) endpoints for Lambda functions.
+- Importance: 4 (High)
 
-You: "Yes, that looks good"
+> Yes, that looks good
 
-Amazon Q: "Great! I've saved the article to your bookmarks."
-[Amazon Q calls store_url() behind the scenes]
+Great! I've saved the article to your bookmarks.
 
-You: "Show me my Chrome bookmarks"
+> Show me my Chrome bookmarks about AWS
 
-Amazon Q: "Here are your Chrome bookmarks:"
-[Amazon Q calls list_chrome_bookmarks() behind the scenes and displays results]
+I'll check your Chrome bookmarks for AWS-related content.
 
-You: "Import the third bookmark into my Research category"
+Found 12 bookmarks related to AWS across your Chrome profiles:
+1. AWS Management Console
+   URL: https://console.aws.amazon.com/
+   Profile: Work/Bookmarks Bar
 
-Amazon Q: "I've imported the bookmark into your Research category."
-[Amazon Q calls import_chrome_bookmark() behind the scenes]
+2. Amazon EC2 Documentation
+   URL: https://docs.aws.amazon.com/ec2/
+   Profile: Work/AWS Documentation
+
+[...more results...]
+
+Would you like me to import any of these into your LinkVault collection?
+
+> Import the first one into my AWS category
+
+I've imported "AWS Management Console" into your AWS category with tags: aws, console, management.
 ```
-
-## Data Storage
-
-- CLI mode: JSON file at `~/Documents/github/linkvault-mcp-server/data/url_database.json`
-- MCP mode: SQLite database at `~/Documents/github/linkvault-mcp-server/data/bookmarks.db`
-
-## Browser Integration
-
-LinkVault supports integration with web browsers to import and manage bookmarks:
-
-### Chrome Integration
-
-- Lists bookmarks from all Chrome profiles on your system
-- Preserves folder structure from Chrome
-- Supports filtering by folder path
-- Works on macOS, Windows, and Linux
-- Handles multiple profiles and combines results
 
 ## MCP Tool Reference
 
@@ -377,6 +301,10 @@ def import_chrome_bookmark(url: str, title: str, category: str,
     """
 ```
 
+## Data Storage
+
+LinkVault stores bookmarks in an SQLite database at `~/Documents/github/linkvault-mcp-server/data/bookmarks.db`
+
 ## Development
 
 ### Requirements
@@ -388,6 +316,58 @@ def import_chrome_bookmark(url: str, title: str, category: str,
   - fastmcp
   - mcp
   - requests
+
+## Project Structure
+
+```
+linkvault-mcp-server/
+├── src/                    # Source code directory
+│   ├── __init__.py         # Package initialization
+│   ├── server.py           # MCP server implementation
+│   ├── url_manager.py      # CLI implementation
+│   └── utils/              # Utility functions
+│       ├── __init__.py
+│       └── browser_integration.py  # Browser integration utilities
+├── data/                   # Database storage
+├── main.py                 # Main entry point
+├── README.md               # This file
+├── CHANGELOG.md            # Version history
+└── pyproject.toml          # Project dependencies
+```
+
+## Additional Features
+
+### CLI Mode
+
+In addition to the MCP integration with Amazon Q CLI, LinkVault also provides a standalone CLI interface for direct bookmark management.
+
+```
+./main.py --mode cli
+```
+
+Or directly:
+
+```
+./src/url_manager.py <command> [options]
+```
+
+#### CLI Commands
+
+- **Add a URL**: `add <url> <category> [-t tags] [-n notes] [--title custom_title]`
+- **List Categories**: `categories`
+- **List URLs in Category**: `list <category>`
+- **Search URLs**: `search <query>`
+- **List Tags**: `tags`
+- **List URLs with Tag**: `tag <tag>`
+- **Delete URL**: `delete <url> [-c category]`
+- **Rename Category**: `rename <old_name> <new_name>`
+- **Delete Category**: `delcat <category>`
+- **List Chrome Bookmarks**: `chrome [-f folder]`
+- **Import Chrome Bookmark**: `import <url> <category> [-t tags] [--title title]`
+
+### CLI Data Storage
+
+The CLI mode uses a JSON file for storage at `~/Documents/github/linkvault-mcp-server/data/url_database.json`
 
 ## License
 
