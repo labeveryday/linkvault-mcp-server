@@ -2,6 +2,10 @@
 
 A tool for extending Amazon Q CLI with AI-assisted bookmark management capabilities.
 
+<p align="center">
+  <img src="./img/logo.png" alt="LinkVault Logo" width="300">
+</p>
+
 ## Overview
 
 LinkVault is an MCP (Model Context Protocol) server that integrates with Amazon Q CLI to provide intelligent bookmark management through natural language. It allows you to access, organize, and search your bookmarks using conversational commands in your terminal.
