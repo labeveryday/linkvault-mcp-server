@@ -1,0 +1,13 @@
+[project]
+name = "linkvault-mcp-server"
+version = "0.1.0"
+description = "A tool for managing, categorizing, and searching web URLs with both CLI and AI-assisted interfaces"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "fastapi>=0.115.12",
+    "fastmcp>=2.5.1",
+    "mcp>=1.9.1",
+    "requests>=2.32.3",
+]

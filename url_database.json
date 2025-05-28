@@ -1,0 +1,29 @@
+{
+  "categories": {
+    "programming": [
+      {
+        "url": "https://docs.python.org/3/",
+        "title": "3.13.3 Documentation",
+        "added_date": "2025-05-27T20:28:50.234463",
+        "last_accessed": null,
+        "notes": "Official Python documentation",
+        "tags": [
+          "python",
+          "documentation",
+          "reference"
+        ]
+      }
+    ]
+  },
+  "tags": {
+    "python": [
+      "https://docs.python.org/3/"
+    ],
+    "documentation": [
+      "https://docs.python.org/3/"
+    ],
+    "reference": [
+      "https://docs.python.org/3/"
+    ]
+  }
+}
