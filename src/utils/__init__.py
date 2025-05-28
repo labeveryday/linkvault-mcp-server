@@ -1,3 +1,3 @@
 """
-Utility functions for LinkVault MCP Server.
+Utility functions for LinkVault.
 """

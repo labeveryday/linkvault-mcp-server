@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.1.0] - 2025-05-28
+
+### Added
+- Chrome bookmark integration
+  - Support for listing Chrome bookmarks across all profiles
+  - Import Chrome bookmarks into LinkVault
+  - Filter bookmarks by folder path
+  - Cross-platform support (macOS, Windows, Linux)
+
+### Improvements
+- Multi-profile support for Chrome bookmarks
+- Enhanced folder structure preservation
+- Robust error handling for browser integration
+
+## [Unreleased]
+
+### Planned Features
+- Browser integration support
+  - Safari bookmark listing and selective import
+  - Edge bookmark listing and selective import
+- Import bookmarks from browser bookmark files
+- Batch processing for large bookmark collections
+- Progress tracking for import operations
+- Resume capability for interrupted imports
+
 ## [1.0.0] - 2025-05-28
 
 ### Added

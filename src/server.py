@@ -15,6 +15,17 @@ from typing import List, Dict, Any
 from bs4 import BeautifulSoup
 from fastmcp import FastMCP
 
+# Import browser integration utilities
+try:
+    from utils.browser_integration import get_chrome_bookmarks, list_chrome_bookmarks
+except ImportError:
+    # Create placeholder functions if the module is not available
+    def get_chrome_bookmarks(flat=True):
+        return {"success": False, "error": "Browser integration module not available", "bookmarks": []}
+    
+    def list_chrome_bookmarks(folder_path=None):
+        return {"success": False, "error": "Browser integration module not available", "bookmarks": []}
+
 # Database setup
 DB_PATH = os.path.expanduser("~/Documents/github/linkvault-mcp-server/data/bookmarks.db")
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -625,6 +636,40 @@ def delete_bookmark(url: str, category: str = None) -> Dict[str, Any]:
             "error": str(e),
             "url": url
         }
+
+@app.tool("list_chrome_bookmarks")
+def list_chrome_bookmarks_tool(folder: str = None) -> Dict[str, Any]:
+    """
+    List Chrome bookmarks, optionally filtered by folder.
+    
+    Args:
+        folder: Optional folder path to filter bookmarks
+        
+    Returns:
+        A dictionary containing Chrome bookmarks
+    """
+    return list_chrome_bookmarks(folder)
+
+@app.tool("import_chrome_bookmark")
+def import_chrome_bookmark(url: str, title: str, category: str, 
+                          tags: List[str], description: str = "", 
+                          importance: int = 3, notes: str = None) -> Dict[str, Any]:
+    """
+    Import a Chrome bookmark into the database.
+    
+    Args:
+        url: The URL of the Chrome bookmark to import
+        title: The title of the bookmark
+        category: The category to assign
+        tags: List of tags to associate with the URL
+        description: A brief description of the content
+        importance: Importance rating (1-5)
+        notes: Optional additional notes or comments about the URL
+        
+    Returns:
+        A dictionary indicating success or failure
+    """
+    return store_url(url, title, category, tags, description, importance, notes)
 
 if __name__ == "__main__":
     # Start the MCP server
