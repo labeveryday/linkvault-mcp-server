@@ -91,9 +91,9 @@ flowchart TD
     filterCheck -->|Yes| applyFilter[Apply Folder Filter]
     filterCheck -->|No| returnAll[Return All Bookmarks]
     applyFilter --> returnFiltered[Return Filtered Bookmarks]
-    returnEmpty --> end[End]
-    returnAll --> end
-    returnFiltered --> end
+    returnEmpty --> endNode[End]
+    returnAll --> endNode
+    returnFiltered --> endNode
 ```
 
 ## Project Structure
